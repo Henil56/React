@@ -1,7 +1,13 @@
-
+import Chai from './chai';
 function App() {
   return (
-    <h1>chai aur react with vite | HK</h1>
+    <>
+    <Chai />
+    <h1>Vite React App</h1>
+    
+    </>
+    
+
   )
 }
 
