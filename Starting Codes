@@ -2,4 +2,4 @@ to start vite : npm create vite@latest;
 to start tailwindcss : npm install tailwindcss @tailwindcss/vite
 import this in file vite.config.ts : import tailwindcss from '@tailwindcss/vite'
 add "tailwindcss()," in plugins array in vite.config.ts;
-import Tailwind is CSS file : @import "tailwindcss";
+import Tailwind is index.css file : @import "tailwindcss";
