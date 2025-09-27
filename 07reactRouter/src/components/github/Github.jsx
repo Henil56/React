@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useLoaderData , useNavigation} from 'react-router-dom';
-
 // Loading spinner component
 function LoadingSpinner() {
   return (
@@ -118,11 +117,11 @@ export default Github;
 export const githubInfoLoader=async()=>{
   const token= import.meta.env.VITE_GITHUB_TOKEN;
   const header={
-    Authorization: `token${token}`,
+    Authorization: `token ${token}`,
   }
   const [userRes, reposRes] = await Promise.all([
-          fetch('https://api.github.com/users/Henil56'),
-          fetch('https://api.github.com/users/Henil56/repos'),
+          fetch('https://api.github.com/users/Henil56' , {headers:header}),
+          fetch('https://api.github.com/users/Henil56/repos' , {headers:header}),
     ]);
      if (!userRes.ok || !reposRes.ok) {
     throw new Error("Failed to fetch GitHub data");
