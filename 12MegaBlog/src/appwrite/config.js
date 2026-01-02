@@ -8,12 +8,24 @@ export class Service {
     bucket;
 
     constructor() {
+        if (!conf?.appwriteUrl || !conf?.appwriteProjectID) {
+            throw new Error('Appwrite configuration missing: set appwriteUrl and appwriteProjectID in conf.');
+        }
+
         this.client
             .setEndpoint(conf.appwriteUrl)
             .setProject(conf.appwriteProjectID);
 
         this.tablesDB = new TablesDB(this.client);
         this.bucket = new Storage(this.client);
+    }
+
+    _handleError(operation, error) {
+        console.error(`[Appwrite Service] ${operation} failed:`, error);
+        const err = new Error(`${operation} failed: ${error?.message || error}`);
+        err.code = error?.code || error?.status || 'APPWRITE_ERROR';
+        err.cause = error;
+        throw err;
     }
 
     async createPost({ title, slug, content, featuredImage, status, userId }) {
@@ -32,7 +44,7 @@ export class Service {
                 }
             });
         } catch (error) {
-            throw error;
+            this._handleError('createPost', error);
         }
     }
 
@@ -50,7 +62,7 @@ export class Service {
             }
         });
     } catch (error) {
-        throw error;
+        this._handleError('updatePost', error);
     }
     }
 
@@ -63,7 +75,7 @@ export class Service {
         });
         return true;
     } catch (error) {
-        throw error;
+        this._handleError('deletePost', error);
     }
     }
     async getPost(slug){
@@ -74,10 +86,10 @@ export class Service {
                 rowId: slug,
         });
         } catch (error) {
-            throw error
+            this._handleError('getPost', error);
         }
     }
-    async getPost(queries=[Query.equal("status","active")]){
+    async getPosts(queries=[Query.equal("status","active")]){
         try {
             return await this.tablesDB.listRows({
                 databaseId: conf.appwriteDatabaseID,
@@ -85,7 +97,7 @@ export class Service {
                 queries,
         });
         } catch (error) {
-            throw error
+            this._handleError('getPost', error);
         }
     }
 
@@ -93,13 +105,17 @@ export class Service {
 
     async uploadFile(file){
         try {
+            const fileToUpload = file || (typeof document !== 'undefined' && document.getElementById('uploader')?.files?.[0]);
+            if (!fileToUpload) {
+                throw new Error('No file provided to upload. Pass a File to uploadFile(file) or provide an input#uploader in the DOM.');
+            }
             return await this.bucket.createFile({             
                 bucketId: conf.appwriteBucketID,
                 fileId: ID.unique(),
                 file: document.getElementById('uploader').files[0]
         })   
         } catch (error) {
-            throw error;
+            this._handleError('uploadFile', error);
         }
     }
     async deleteFile(fileId){
@@ -110,14 +126,18 @@ export class Service {
             })
             return true
         } catch (error) {
-            throw error;
+            this._handleError('deleteFile', error);
         }
     }
-    getFileFile(fileId){
-        return this.bucket.getFilePreview({
-            bucketId: conf.appwriteBucketID,
-            fileId: fileId,
-        });
+    getFilePreview(fileId){
+        try {
+            return this.bucket.getFilePreview({
+                bucketId: conf.appwriteBucketID,
+                fileId: fileId,
+            });
+        } catch (error) {
+            this._handleError('getFilePreview', error);
+        }
     }
     
 }
