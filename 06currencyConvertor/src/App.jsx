@@ -23,13 +23,18 @@ function App() {
   return (
     <>
       <div className="relative w-full h-screen flex justify-center items-center">
-        
-        <div
-          className="absolute inset-0 bg-cover bg-no-repeat blur-xs"
-          style={{
-            backgroundImage: `url('https://images.pexels.com/photos/534216/pexels-photo-534216.jpeg')`,
-          }}
-        ></div>
+        <div className="absolute inset-0 overflow-hidden">
+  <video
+    autoPlay
+    loop
+    muted
+    playsInline
+    className="absolute inset-0 w-full h-full object-cover blur-sm pointer-events-none"
+  >
+    <source src="/background.mp4" type="video/mp4" />
+  </video>
+</div>
+
 
         
         <div className="relative w-full max-w-md mx-auto border border-gray-60 rounded-lg p-5 backdrop-blur-sm bg-white/30">
