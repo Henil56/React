@@ -7,7 +7,7 @@ function Select({
     ...props
 }) 
 {
-    constid=useId()
+    const id=useId()
     return (
     <div className='w-full'>
         {label && <label htmlFor={id} className=''></label>}
@@ -28,4 +28,4 @@ function Select({
   )
 }
 
-export default React.forwardRef(Select)
+export default Select
