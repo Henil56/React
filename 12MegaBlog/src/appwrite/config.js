@@ -47,6 +47,7 @@ export class Service {
             this._handleError('createPost', error);
         }
     }
+    
 
     async updatePost(slug, { title, content, featuredImage, status }) {
     try {
@@ -112,7 +113,7 @@ export class Service {
             return await this.bucket.createFile({             
                 bucketId: conf.appwriteBucketID,
                 fileId: ID.unique(),
-                file: document.getElementById('uploader').files[0]
+                file: file
         })   
         } catch (error) {
             this._handleError('uploadFile', error);
@@ -131,7 +132,7 @@ export class Service {
     }
     getFilePreview(fileId){
         try {
-            return this.bucket.getFilePreview({
+            return this.bucket.getFileView({
                 bucketId: conf.appwriteBucketID,
                 fileId: fileId,
             });

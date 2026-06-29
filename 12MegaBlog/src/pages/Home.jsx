@@ -10,7 +10,7 @@ function Home() {
         if(isLoggedIn){
             appwriteService.getPosts().then((posts)=>{
             if(posts){
-                setPosts(posts.documents)
+                setPosts(posts.rows || [])
             }
         })
         }else{
@@ -18,7 +18,7 @@ function Home() {
         } 
     },[isLoggedIn])
 
-    if (posts.length === 0 && !isLoggedIn) {
+    if ((!posts || posts.length === 0) && !isLoggedIn) {
         return (
             <div className="w-full py-8 mt-4 text-center">
                 <Container>
